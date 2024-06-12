@@ -3,12 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RoomListScreen from '../components/RoomListScreen';
 import ChatScreen from '../components/ChatScreen';
+import LoginScreen from '../components/LoginScreen';
+import SignUpScreen from '../components/SignUpScreen';
 import { View, StyleSheet } from 'react-native';
-import CustomHeader from './CustomHeader'; // Adjust the import path as necessary
+import CustomHeader from './CustomHeader'; 
 
 export type RootStackParamList = {
   RoomList: undefined;
-  Chat: { roomId: string };
+  Chat: { roomId: string; myId: string };
+  Login: undefined;
+  SignUp: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -24,7 +28,21 @@ const CustomHeaderWrapper = () => {
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="RoomList">
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="RoomList"
           component={RoomListScreen}
@@ -46,6 +64,6 @@ export default function AppNavigator() {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#F0F8FF', // Set to your app's main background color
+    backgroundColor: '#F0F8FF',
   },
 });

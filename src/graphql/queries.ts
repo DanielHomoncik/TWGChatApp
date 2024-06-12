@@ -3,7 +3,21 @@ import { gql } from '@apollo/client';
 
 export const GET_ROOMS = gql`
   query {
-    usersRooms {
+    
+      usersRooms {
+        rooms {
+          id
+          name
+        }
+        user {
+          email
+          firstName
+          lastName
+          id
+          role
+        }
+      }
+    
       user {
         email
         firstName
@@ -11,27 +25,26 @@ export const GET_ROOMS = gql`
         id
         role
       }
-      rooms {
-        id
-        name
-      }
-    }
+     
+    
+    
   }
 `;
-
 
 
 export const GET_ROOM_MESSAGES = gql`
   query GetRoomMessages($id: ID!) {
     room(id: $id) {
+      id
       messages {
         id
-        text
-        createdAt
+        body
         user {
           id
           firstName
+          lastName
         }
+        insertedAt
       }
     }
   }
