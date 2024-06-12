@@ -17,9 +17,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [emailError, setEmailError] = useState('');
     const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
 
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
     const handleLogin = async () => {
+        if (!validateEmail(email)) {
+            setEmailError('Invalid email format');
+            return;
+        } else {
+            setEmailError('');
+        }
+
         try {
             const { data } = await loginUser({ variables: { email, password } });
             await AsyncStorage.setItem('token', data.loginUser.token);
@@ -74,7 +87,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
                         {loading ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.loginButtonText}>Log in</Text>}
                     </TouchableOpacity>
+                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
                     {error && <Text style={styles.errorText}>{error.message}</Text>}
+
                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                         <Text style={styles.signUpText}>Don't have an account? <Text style={styles.signUpLinkText}>Sign up</Text></Text>
                     </TouchableOpacity>
@@ -110,7 +125,6 @@ const styles = StyleSheet.create({
         fontSize: 40,
         fontWeight: 'bold',
         color: '#6A0DAD',
-
         marginBottom: 20,
     },
     subtitleText: {
@@ -158,7 +172,7 @@ const styles = StyleSheet.create({
     errorText: {
         color: 'red',
         textAlign: 'center',
-        marginTop: 10,
+        marginVertical: 10,
     },
     signUpText: {
         color: '#FFFFFF',
@@ -172,121 +186,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
-
-
-
-/////////////////////
-
-// Tak powinno wyglądac logowanie ale mój utworzony urzytkownik nie ma czatów więc wszyscy wchodza na ten token który miałem na samym początku żeby była lista użytkowników
-// i dało się to sprawdzić wiem ze zakomentowany kod to błąd ale nie wiedziałem jak to inaczje rozwiązać żeby mieć czaty i jednoczesniej móc się logować na nowych urzytkowników
-// należy odkomentować tą częśc i zakomenetować to co jest obecnie i to samo  w client
-
-//////////////////
-// src/components/LoginScreen.tsx
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-// import { useMutation } from '@apollo/client';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { LOGIN_USER } from '../graphql/mutations';
-// import { StackNavigationProp } from '@react-navigation/stack';
-// import { RootStackParamList } from '../navigation/AppNavigator';
-
-// type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-
-// type Props = {
-//   navigation: LoginScreenNavigationProp;
-// };
-
-// const LoginScreen: React.FC<Props> = ({ navigation }) => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
-
-//   const handleLogin = async () => {
-//     try {
-//       const { data } = await loginUser({ variables: { email, password } });
-//       await AsyncStorage.setItem('token', data.loginUser.token);
-//       navigation.navigate('RoomList');
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.welcomeText}>Welcome back</Text>
-//       <Text style={styles.subtitleText}>Log in and stay in touch with everyone!</Text>
-//       <TextInput
-//         style={styles.input}
-//         placeholder="e-mail address"
-//         value={email}
-//         onChangeText={setEmail}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="password"
-//         value={password}
-//         onChangeText={setPassword}
-//         secureTextEntry
-//       />
-//       <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
-//         <Text style={styles.loginButtonText}>Log in</Text>
-//       </TouchableOpacity>
-//       {error && <Text style={styles.errorText}>{error.message}</Text>}
-//       <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-//         <Text style={styles.signUpText}>Don't have an account? Sign up</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#B6DEFD',
-//     justifyContent: 'center',
-//     padding: 20,
-//   },
-//   welcomeText: {
-//     fontSize: 32,
-//     fontWeight: 'bold',
-//     color: '#6A0DAD',
-//     textAlign: 'center',
-//     marginBottom: 20,
-//   },
-//   subtitleText: {
-//     fontSize: 16,
-//     color: '#6A0DAD',
-//     textAlign: 'center',
-//     marginBottom: 20,
-//   },
-//   input: {
-//     backgroundColor: '#FFFFFF',
-//     borderRadius: 8,
-//     padding: 10,
-//     marginBottom: 20,
-//   },
-//   loginButton: {
-//     backgroundColor: '#6A0DAD',
-//     borderRadius: 8,
-//     padding: 15,
-//     alignItems: 'center',
-//   },
-//   loginButtonText: {
-//     color: '#FFFFFF',
-//     fontWeight: 'bold',
-//   },
-//   errorText: {
-//     color: 'red',
-//     textAlign: 'center',
-//     marginTop: 10,
-//   },
-//   signUpText: {
-//     color: '#6A0DAD',
-//     textAlign: 'center',
-//     marginTop: 20,
-//   },
-// });
-
-// export default LoginScreen;

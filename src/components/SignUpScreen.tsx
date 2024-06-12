@@ -20,9 +20,30 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [registerUser, { loading, error }] = useMutation(REGISTER_USER);
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleSignUp = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email format');
+      return;
+    } else {
+      setEmailError('');
+    }
+
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long');
+      return;
+    } else {
+      setPasswordError('');
+    }
+
     try {
       await registerUser({
         variables: { email, firstName, lastName, password, passwordConfirmation },
@@ -46,7 +67,6 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <Text style={styles.titleText}>Create account</Text>
-
             <Text style={styles.labelText}>e-mail address</Text>
             <TextInput
               style={styles.input}
@@ -55,21 +75,19 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
             <Text style={styles.labelText}>first name</Text>
             <TextInput
               style={styles.input}
               value={firstName}
               onChangeText={setFirstName}
             />
-
             <Text style={styles.labelText}>last name</Text>
             <TextInput
               style={styles.input}
               value={lastName}
               onChangeText={setLastName}
             />
-
             <Text style={styles.labelText}>password</Text>
             <View style={styles.passwordContainer}>
               <TextInput
@@ -94,7 +112,7 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
                 )}
               </TouchableOpacity>
             </View>
-
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
             <Text style={styles.labelText}>password confirmation</Text>
             <View style={styles.passwordContainer}>
               <TextInput
@@ -119,20 +137,16 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
                 )}
               </TouchableOpacity>
             </View>
-
             <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp} disabled={loading}>
               {loading ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.signUpButtonText}>Sign up</Text>}
             </TouchableOpacity>
-
             {error && <Text style={styles.errorText}>{error.message}</Text>}
-
             <Text style={styles.termsText}>
               By signing up you agree with our
               <Text style={styles.linkText} onPress={() => openLink('https://reactnative.dev/docs/getting-started')}> Terms and Conditions </Text>
               and
               <Text style={styles.linkText} onPress={() => openLink('https://reactnative.dev/docs/intro-react')}> Privacy Policy</Text>
             </Text>
-
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.loginText}>
                 Already have an account? <Text style={styles.linkText}>Log in</Text>
