@@ -35,7 +35,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
         try {
             const { data } = await loginUser({ variables: { email, password } });
-            await AsyncStorage.setItem('token', data.loginUser.token);
+            await AsyncStorage.setItem('token', data?.loginUser?.token);
             navigation.navigate('RoomList');
         } catch (err) {
             console.error(err);

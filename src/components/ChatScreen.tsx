@@ -38,7 +38,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const renderMessage = ({ item }: { item: any }) => (
     <View style={item.user.id === myId ? styles.sentMessage : styles.receivedMessage}>
-      <Text style={item.user.id === myId ? styles.sentMessageText : styles.receivedMessageText}>{item.body}</Text>
+      <Text style={item.user.id === myId ? styles.sentMessageText : styles.receivedMessageText}>{item?.body}</Text>
       <Text style={styles.messageTimestamp}>{new Date(item.insertedAt).toLocaleTimeString()}</Text>
     </View>
   );
@@ -46,7 +46,7 @@ const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={90}>
       <FlatList
-        data={data.room.messages}
+        data={data?.room?.messages}
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
         inverted
