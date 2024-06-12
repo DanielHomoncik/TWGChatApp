@@ -46,7 +46,6 @@ const RoomItem: React.FC<{ room: Room, user: User, navigation: RoomsScreenNaviga
         <Path d="M32 32C38.6274 32 44 26.6274 44 20C44 13.3726 38.6274 8 32 8C25.3726 8 20 13.3726 20 20C20 26.6274 25.3726 32 32 32Z" fill="#BFC1CC" />
         <Path d="M32 32C51.33 32 67 47.67 67 67C67 86.33 51.33 102 32 102C12.67 102 -3 86.33 -3 67C-3 47.67 12.67 32 32 32Z" fill="#BFC1CC" />
       </Svg>
-
     </View>
     {isFirstUser && <View style={styles.onlineIndicator} />}
     <View style={styles.roomInfo}>
@@ -63,12 +62,11 @@ const RoomItem: React.FC<{ room: Room, user: User, navigation: RoomsScreenNaviga
 
 const RoomListScreen: React.FC<Props> = ({ navigation }) => {
   const { loading, error, data } = useQuery(GET_ROOMS);
+  const rooms: Room[] = data.usersRooms.rooms;
+  const user: User = data.user;
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
-
-  const rooms: Room[] = data.usersRooms.rooms;
-  const user: User = data.user;
 
   const renderRoomItem = ({ item, index }: { item: Room, index: number }) => (
     <RoomItem room={item} user={user} navigation={navigation} isFirstUser={index === 0} />
