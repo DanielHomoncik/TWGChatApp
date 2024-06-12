@@ -62,8 +62,8 @@ const RoomItem: React.FC<{ room: Room, user: User, navigation: RoomsScreenNaviga
 
 const RoomListScreen: React.FC<Props> = ({ navigation }) => {
   const { loading, error, data } = useQuery(GET_ROOMS);
-  const rooms: Room[] = data.usersRooms.rooms;
-  const user: User = data.user;
+  const rooms: Room[] = data?.usersRooms?.rooms;
+  const user: User = data?.user;
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
